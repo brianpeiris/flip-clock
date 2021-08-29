@@ -6,6 +6,8 @@ window.THREE = THREE;
 
 import { Clock } from "./clock";
 
+const queryParams = new URLSearchParams(location.search);
+
 (async () => {
   const textureLoader = new THREE.TextureLoader();
 
@@ -42,8 +44,9 @@ import { Clock } from "./clock";
   clock.scale.setScalar(0.3);
   scene.add(clock);
 
-  const renderer = new Renderer({disableFullscreenUi: false});
-  renderer.render2d = false;
+  const renderer = new Renderer({disableFullscreenUi: queryParams.has("2d") });
+  renderer.render2d = queryParams.has("2d");
+  renderer.renderQuilt = queryParams.has("quilt");
   renderer.domElement.className = "gl";
   renderer.webglRenderer.physicallyCorrectLights = true;
   renderer.webglRenderer.shadowMap.enabled = true;
