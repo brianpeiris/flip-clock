@@ -30,18 +30,23 @@ const queryParams = new URLSearchParams(location.search);
   scene.add(directionalLight);
 
   const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 2), new THREE.MeshStandardMaterial({ wireframe: true }));
-  // scene.add(frame);
+  //scene.add(frame);
 
   const back = new THREE.Mesh(
     new THREE.BoxGeometry(3, 4, 0.1),
     new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 1, metalness: 0 })
   );
   back.receiveShadow = true;
-  back.position.z = -1;
+  if (!queryParams.has("forward")) {
+    back.position.z = -1;
+  }
   scene.add(back);
 
   const clock = new Clock(noiseImageData, brushedImageData);
   clock.scale.setScalar(0.3);
+  if (queryParams.has("forward")) {
+    clock.position.z = 0.7;
+  } 
   scene.add(clock);
 
   const renderer = new Renderer({disableFullscreenUi: queryParams.has("2d") });
@@ -54,7 +59,9 @@ const queryParams = new URLSearchParams(location.search);
 
   const camera = new Camera();
   camera.position.z = 20;
-  //new OrbitControls(camera, renderer.domElement);
+  if (queryParams.has("2d")) {
+    new OrbitControls(camera, renderer.domElement);
+  }
 
   renderer.webglRenderer.setAnimationLoop(() => {
     clock.update();
